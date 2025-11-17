@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Search Engines For CyberSec</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --bg-card: #1e2433;
+            --text-primary: #e4e6eb;
+            --text-secondary: #b0b3b8;
+            --border-color: #2d3748;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .menu-btn:hover {
+            color: var(--accent-color);
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-align: center;
+            flex: 1;
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: rotate(180deg);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: -320px;
+            top: 0;
+            width: 320px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            transition: left 0.3s;
+            z-index: 200;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 150;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-item:hover {
+            background: var(--bg-card);
+        }
+
+        .category-item.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .category-count {
+            background: var(--bg-card);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        .category-item.active .category-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px var(--shadow);
+            border-color: var(--accent-color);
+        }
+
+        .tool-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        .footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.1rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 280px;
+                left: -280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <h1 class="title">🔒 Awesome Search Engines For CyberSec</h1>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Categories</h2>
+            <button class="close-btn" id="closeBtn">✕</button>
+        </div>
+        <input type="text" class="search-box" id="categorySearch" placeholder="Search categories...">
+        <ul class="category-list" id="categoryList"></ul>
+    </aside>
+
+    <main class="container">
+        <input type="text" class="search-box" id="toolSearch" placeholder="🔍 Search tools, descriptions, or categories...">
+        <div class="tools-grid" id="toolsGrid"></div>
+    </main>
+
+    <footer class="footer">
+        <p>Made with ❤️ by <strong>Aryan Giri</strong></p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+            Credits: <a href="https://github.com/giriaryan694-a11y/Awsome-Search-Engines-For-CyberSec" target="_blank">Awsome-Search-Engines-For-CyberSec</a>
+        </p>
+    </footer>
+
+    <script>
+        const tools = [
+            // General Search Engines
+            { name: "Google", description: "The most popular search engine", category: "General Search Engines", url: "https://google.com" },
+            { name: "Bing", description: "Microsoft search engine", category: "General Search Engines", url: "https://bing.com" },
+            { name: "Yahoo!", description: "Web services provider", category: "General Search Engines", url: "https://yahoo.com" },
+            { name: "Yandex", description: "Russian search engine", category: "General Search Engines", url: "https://yandex.com" },
+            { name: "Ask", description: "Question-answering search engine", category: "General Search Engines", url: "https://ask.com" },
+            { name: "Baidu", description: "Chinese search engine", category: "General Search Engines", url: "https://baidu.com" },
+            { name: "You", description: "Privacy-focused search engine", category: "General Search Engines", url: "https://you.com" },
+            { name: "SearXNG", description: "Privacy-respecting, hackable metasearch engine", category: "General Search Engines", url: "https://searxng.org" },
+            { name: "DuckDuckGo", description: "Privacy-focused search engine", category: "General Search Engines", url: "https://duckduckgo.com" },
+            { name: "Brave", description: "Privacy-focused search engine", category: "General Search Engines", url: "https://search.brave.com" },
+
+            // Servers
+            { name: "Shodan", description: "Search Engine for the Internet of Everything", category: "Servers", url: "https://www.shodan.io/" },
+            { name: "Censys Search", description: "Search Engine for every server on the Internet to reduce exposure and improve security", category: "Servers", url: "https://search.censys.io/" },
+            { name: "Onyphe.io", description: "Cyber Defense Search Engine for open-source and cyber threat intelligence data", category: "Servers", url: "https://www.onyphe.io/" },
+            { name: "ZoomEye", description: "Global cyberspace mapping", category: "Servers", url: "https://www.zoomeye.org/" },
+            { name: "GreyNoise", description: "The source for understanding internet noise", category: "Servers", url: "https://www.greynoise.io/" },
+            { name: "Natlas", description: "Scaling Network Scanning", category: "Servers", url: "https://natlas.io/" },
+            { name: "Netlas.io", description: "Discover, Research and Monitor any Assets Available Online", category: "Servers", url: "https://netlas.io/" },
+            { name: "FOFA", description: "Cyberspace mapping", category: "Servers", url: "https://fofa.info/" },
+            { name: "Quake", description: "Cyberspace surveying and mapping system", category: "Servers", url: "https://quake.360.cn/" },
+            { name: "Hunter", description: "Internet Search Engines For Security Researchers", category: "Servers", url: "https://hunter.io/" },
+
+            // Vulnerabilities
+            { name: "NIST NVD", description: "US National Vulnerability Database", category: "Vulnerabilities", url: "https://nvd.nist.gov/" },
+            { name: "MITRE CVE", description: "Identify, define, and catalog publicly disclosed cybersecurity vulnerabilities", category: "Vulnerabilities", url: "https://cve.mitre.org/" },
+            { name: "GitHub Advisory Database", description: "Security vulnerability database inclusive of CVEs and GitHub originated security advisories", category: "Vulnerabilities", url: "https://github.com/advisories" },
+            { name: "OSV.dev", description: "Open Source Vulnerabilities", category: "Vulnerabilities", url: "https://osv.dev/" },
+            { name: "Vulners.com", description: "Your Search Engine for Security Intelligence", category: "Vulnerabilities", url: "https://vulners.com/" },
+            { name: "Snyk Security", description: "Open Source Vulnerability Database", category: "Vulnerabilities", url: "https://security.snyk.io/" },
+            { name: "Rapid7 DB", description: "Vulnerability & Exploit Database", category: "Vulnerabilities", url: "https://www.rapid7.com/db/" },
+            { name: "CVEDetails", description: "The ultimate security vulnerability datasource", category: "Vulnerabilities", url: "https://www.cvedetails.com/" },
+            { name: "Vulmon", description: "Vulnerability and exploit search engine", category: "Vulnerabilities", url: "https://vulmon.com/" },
+            { name: "VulDB", description: "Number one vulnerability database", category: "Vulnerabilities", url: "https://vuldb.com/" },
+
+            // Exploits
+            { name: "Exploit-DB", description: "Exploit Database", category: "Exploits", url: "https://www.exploit-db.com/" },
+            { name: "Sploitus", description: "Convenient central place for identifying the newest exploits", category: "Exploits", url: "https://sploitus.com/" },
+            { name: "PacketStorm Security", description: "Information Security Services, News, Files, Tools, Exploits, Advisories and Whitepapers", category: "Exploits", url: "https://packetstormsecurity.com/" },
+            { name: "LOLBAS", description: "Living Off The Land Binaries, Scripts and Libraries", category: "Exploits", url: "https://lolbas-project.github.io/" },
+            { name: "GTFOBins", description: "Curated list of Unix binaries that can be used to bypass local security restrictions", category: "Exploits", url: "https://gtfobins.github.io/" },
+            { name: "Payloads All The Things", description: "A list of useful payloads and bypasses for Web Application Security", category: "Exploits", url: "https://github.com/swisskyrepo/PayloadsAllTheThings" },
+            { name: "HackerOne Hacktivity", description: "See the latest hacker activity on HackerOne", category: "Exploits", url: "https://hackerone.com/hacktivity" },
+            { name: "Bugcrowd Crowdscream", description: "Showcase of accepted and disclosed submissions on Bugcrowd programs", category: "Exploits", url: "https://bugcrowd.com/crowdscream" },
+            { name: "GTFOArgs", description: "Curated list of Unix binaries that can be manipulated for argument injection", category: "Exploits", url: "https://gtfobins.github.io/" },
+            { name: "Shell-Storm", description: "Shellcodes database for study cases", category: "Exploits", url: "http://shell-storm.org/shellcode/" },
+
+            // Attack Surface
+            { name: "FullHunt.io", description: "Attack surface database of the entire Internet", category: "Attack Surface", url: "https://fullhunt.io/" },
+            { name: "BinaryEdge", description: "We scan the web and gather data for you", category: "Attack Surface", url: "https://www.binaryedge.io/" },
+            { name: "SecurityTrails", description: "The Total Internet Inventory", category: "Attack Surface", url: "https://securitytrails.com/" },
+            { name: "Censys ASM", description: "Attack Surface Management Solutions", category: "Attack Surface", url: "https://censys.io/attack-surface-management" },
+            { name: "RedHunt Labs", description: "Discover your Attack Surface, Continuously", category: "Attack Surface", url: "https://redhuntlabs.com/" },
+            { name: "IPInfo.io", description: "The trusted source for IP address data", category: "Attack Surface", url: "https://ipinfo.io/" },
+            { name: "NetworksDB", description: "Information about the public IPv4 and IPv6 addresses", category: "Attack Surface", url: "https://networksdb.io/" },
+            { name: "ASNlookup", description: "Quickly lookup information about specific ASN", category: "Attack Surface", url: "https://asnlookup.com/" },
+            { name: "BGPview", description: "Debug and investigate information about IP addresses, ASN, IXs, BGP", category: "Attack Surface", url: "https://bgpview.io/" },
+            { name: "CloudFlare Radar", description: "Global Internet traffic, attack, and technology trends", category: "Attack Surface", url: "https://radar.cloudflare.com/" },
+
+            // Code
+            { name: "GitHub Code Search", description: "Search globally across all of GitHub", category: "Code", url: "https://github.com/search" },
+            { name: "grep.app", description: "Search across a half million git repos", category: "Code", url: "https://grep.app/" },
+            { name: "SearchCode", description: "Search 75 billion lines of code from 40 million projects", category: "Code", url: "https://searchcode.com/" },
+            { name: "SourceGraph", description: "Understand and search across your entire codebase", category: "Code", url: "https://sourcegraph.com/" },
+            { name: "PublicWWW", description: "Find any alphanumeric snippet in web pages HTML, JS and CSS", category: "Code", url: "https://publicwww.com/" },
+            { name: "HotExamples", description: "Search code examples from over 1 million projects", category: "Code", url: "https://hotexamples.com/" },
+            { name: "GitHub Gists", description: "Instantly share code, notes, and snippets", category: "Code", url: "https://gist.github.com/" },
+            { name: "Deps.dev", description: "Understand the structure and security of open source packages", category: "Code", url: "https://deps.dev/" },
+            { name: "Snippir", description: "Code snippet search engine", category: "Code", url: "https://snippir.com/" },
+            { name: "SearchFTPs", description: "The most advanced FTP Search Engine service", category: "Code", url: "https://searchftps.com/" },
+
+            // Mail Addresses
+            { name: "Hunter.io", description: "Find professional email addresses in seconds", category: "Mail Addresses", url: "https://hunter.io/" },
+            { name: "PhoneBook", description: "Lists all domains, email addresses, or URLs for a domain", category: "Mail Addresses", url: "https://phonebook.cz/" },
+            { name: "IntelligenceX", description: "Search engine and data archive", category: "Mail Addresses", url: "https://intelx.io/" },
+            { name: "RocketReach", description: "Your first-degree connection to any professional", category: "Mail Addresses", url: "https://rocketreach.co/" },
+            { name: "EmailHippo", description: "Email address verification technology", category: "Mail Addresses", url: "https://emailhippo.com/" },
+            { name: "ThatsThem", description: "Reverse email lookup", category: "Mail Addresses", url: "https://thatsthem.com/" },
+            { name: "VoilaNorbert", description: "Find anyone's email address", category: "Mail Addresses", url: "https://www.voilanorbert.com/" },
+            { name: "Tomba.io", description: "Email finder with 430+ million email addresses indexed", category: "Mail Addresses", url: "https://tomba.io/" },
+            { name: "Emailrep.io", description: "Simple Email Reputation", category: "Mail Addresses", url: "https://emailrep.io/" },
+            { name: "ContactOut", description: "Most accurate email finder for personal and work email", category: "Mail Addresses", url: "https://contactout.com/" },
+
+            // Domains
+            { name: "DomainIQ", description: "Comprehensive Domain Intelligence", category: "Domains", url: "https://www.domainiq.com/" },
+            { name: "Whois DomainTools", description: "Industry's fastest domain discovery engine", category: "Domains", url: "https://whois.domaintools.com/" },
+            { name: "BuiltWith", description: "Find out what websites are Built With", category: "Domains", url: "https://builtwith.com/" },
+            { name: "Netcraft", description: "Find out the infrastructure and technologies used by any site", category: "Domains", url: "https://sitereport.netcraft.com/" },
+            { name: "SecurityHeaders", description: "Scan your site now for security headers", category: "Domains", url: "https://securityheaders.com/" },
+            { name: "Grayhatwarfare Buckets", description: "Public buckets search", category: "Domains", url: "https://buckets.grayhatwarfare.com/" },
+            { name: "C99.nl", description: "Over 57 quality APIs and growing", category: "Domains", url: "https://c99.nl/" },
+            { name: "SubdomainFinder", description: "Scanner that scans an entire domain to find subdomains", category: "Domains", url: "https://subdomainfinder.c99.nl/" },
+            { name: "SpyOnWeb", description: "Quick search for websites that belong to the same owner", category: "Domains", url: "https://spyonweb.com/" },
+            { name: "HaveIBeenSquatted", description: "Check if a domain has been typosquatted", category: "Domains", url: "https://haveibeensquatted.com/" },
+
+            // URLs
+            { name: "URLScan", description: "A sandbox for the web", category: "URLs", url: "https://urlscan.io/" },
+            { name: "HackerTarget", description: "Collect information about IP Addresses, Networks, Web Pages", category: "URLs", url: "https://hackertarget.com/" },
+            { name: "CommonCrawl", description: "Open repository of web crawl data", category: "URLs", url: "https://commoncrawl.org/" },
+            { name: "URLVoid", description: "Check the online reputation/safety of a website", category: "URLs", url: "https://www.urlvoid.com/" },
+            { name: "CheckPhish", description: "Real-time URL and website scanner", category: "URLs", url: "https://checkphish.ai/" },
+            { name: "Web-check", description: "All-in-one OSINT tool for checking website data", category: "URLs", url: "https://web-check.xyz/" },
+            { name: "TinyScan", description: "Effortlessly Dive into URL Details", category: "URLs", url: "https://tinyscan.com/" },
+            { name: "urldna.io", description: "Unleash website insights and security risks", category: "URLs", url: "https://urldna.io/" },
+
+            // DNS
+            { name: "DNSDumpster", description: "DNS recon & research, find & lookup dns records", category: "DNS", url: "https://dnsdumpster.com/" },
+            { name: "Chaos", description: "Enhance research and analyse changes around DNS", category: "DNS", url: "https://chaos.projectdiscovery.io/" },
+            { name: "RapidDNS", description: "DNS query tool for subdomains or sites of same IP", category: "DNS", url: "https://rapiddns.io/" },
+            { name: "DNSdb", description: "Passive DNS historical database", category: "DNS", url: "https://dnsdb.io/" },
+            { name: "DNSTwister", description: "Anti-phishing domain name search and DNS monitoring", category: "DNS", url: "https://dnstwister.report/" },
+            { name: "DNSviz", description: "Tool for visualizing the status of a DNS zone", category: "DNS", url: "https://dnsviz.net/" },
+            { name: "DNSlytics", description: "Find out everything about a domain name, IP address", category: "DNS", url: "https://dnslytics.com/" },
+            { name: "MXtoolbox", description: "All of your MX record, DNS, blacklist diagnostics", category: "DNS", url: "https://mxtoolbox.com/" },
+            { name: "NSLookup.io", description: "Find all DNS records for a domain name", category: "DNS", url: "https://www.nslookup.io/" },
+
+            // Certificates
+            { name: "Crt.sh", description: "Certificate Search", category: "Certificates", url: "https://crt.sh/" },
+            { name: "CTSearch", description: "Certificate Transparency Search Tool", category: "Certificates", url: "https://certificate.transparency.dev/" },
+            { name: "CertSpotter", description: "Monitors your domains for SSL certificates", category: "Certificates", url: "https://certspotter.com/" },
+            { name: "FacebookCT", description: "Search for certificates issued for a given domain", category: "Certificates", url: "https://developers.facebook.com/tools/ct/" },
+            { name: "Ciphersuite.info", description: "TLS Ciphersuite Search", category: "Certificates", url: "https://ciphersuite.info/" },
+
+            // WiFi Networks
+            { name: "Wigle.net", description: "Maps and database of 802.11 wireless networks", category: "WiFi Networks", url: "https://wigle.net/" },
+            { name: "wifimap.io", description: "Connect to Free WiFi Hotspots worldwide", category: "WiFi Networks", url: "https://www.wifimap.io/" },
+            { name: "openwifimap.net", description: "HTML5 map with OpenWiFiMap data", category: "WiFi Networks", url: "https://openwifimap.net/" },
+
+            // Device Information
+            { name: "MACVendors", description: "Look up the vendor for a specific MAC Address", category: "Device Information", url: "https://macvendors.com/" },
+            { name: "macaddress.io", description: "MAC address vendor lookup", category: "Device Information", url: "https://macaddress.io/" },
+            { name: "maclookup.app", description: "Find the vendor name by MAC address", category: "Device Information", url: "https://maclookup.app/" },
+
+            // Credentials
+            { name: "Have I Been Pwned", description: "Check if your email or phone is in a data breach", category: "Credentials", url: "https://haveibeenpwned.com/" },
+            { name: "Dehashed", description: "Free deep-web scans against credential leaks", category: "Credentials", url: "https://dehashed.com/" },
+            { name: "LeakCheck.io", description: "Make sure your credentials haven't been compromised", category: "Credentials", url: "https://leakcheck.io/" },
+            { name: "CrackStation", description: "Massive pre-computed lookup tables to crack password hashes", category: "Credentials", url: "https://crackstation.net/" },
+            { name: "HashKiller", description: "Pre-cracked Hashes, easily searchable", category: "Credentials", url: "https://hashkiller.io/" },
+            { name: "BugMeNot", description: "Find and share logins", category: "Credentials", url: "http://bugmenot.com/" },
+            { name: "Hashes.com", description: "Decrypt and crack your hashes for free", category: "Credentials", url: "https://hashes.com/" },
+
+            // Leaks
+            { name: "WikiLeaks", description: "News leaks and classified media from anonymous sources", category: "Leaks", url: "https://wikileaks.org/" },
+            { name: "Leak-Lookup", description: "Search across thousands of data breaches", category: "Leaks", url: "https://leak-lookup.com/" },
+            { name: "Snusbase", description: "Stay on top of the latest database breaches", category: "Leaks", url: "https://snusbase.com/" },
+            { name: "BreachForums", description: "Breaches, Data leaks, databases and more", category: "Leaks", url: "https://breachforums.is/" },
+            { name: "Distributed Denial of Secrets", description: "Publishing and archiving leaks", category: "Leaks", url: "https://ddosecrets.com/" },
+            { name: "Cryptome", description: "Documents prohibited by governments worldwide", category: "Leaks", url: "https://cryptome.org/" },
+
+            // Hidden Services
+            { name: "AHMIA", description: "Search hidden services on the Tor network", category: "Hidden Services", url: "https://ahmia.fi/" },
+            { name: "TheHiddenWiki", description: "The darknet guide", category: "Hidden Services", url: "http://thehiddenwiki.org/" },
+            { name: "OnionLand", description: "Discover Hidden Services and access Tor's onion sites", category: "Hidden Services", url: "https://onionland.io/" },
+
+            // Social Networks
+            { name: "Facebook", description: "Social networking service", category: "Social Networks", url: "https://facebook.com/" },
+            { name: "Instagram", description: "Photo and video sharing social networking service", category: "Social Networks", url: "https://instagram.com/" },
+            { name: "Twitter/X", description: "Social networking and microblogging service", category: "Social Networks", url: "https://twitter.com/" },
+            { name: "LinkedIn", description: "Business and employment-oriented social networking", category: "Social Networks", url: "https://linkedin.com/" },
+            { name: "Reddit", description: "Social news aggregation and discussion website", category: "Social Networks", url: "https://reddit.com/" },
+            { name: "TikTok", description: "Video sharing social networking service", category: "Social Networks", url: "https://tiktok.com/" },
+
+            // Phone Numbers
+            { name: "NumLookup", description: "Free reverse phone lookup", category: "Phone Numbers", url: "https://www.numlookup.com/" },
+            { name: "SpyDialer", description: "Free Reverse Lookup Search", category: "Phone Numbers", url: "https://spydialer.com/" },
+            { name: "WhitePages", description: "Find people, contact info & background checks", category: "Phone Numbers", url: "https://www.whitepages.com/" },
+            { name: "TruePeopleSearch", description: "Get current address, cell phone, email, relatives", category: "Phone Numbers", url: "https://www.truepeoplesearch.com/" },
+            { name: "Tellows", description: "Who is calling? Phone number reverse search", category: "Phone Numbers", url: "https://www.tellows.com/" },
+
+            // Images
+            { name: "Google Image Search", description: "The most comprehensive image search on the web", category: "Images", url: "https://images.google.com/" },
+            { name: "TinEye", description: "Reverse image search engine", category: "Images", url: "https://tineye.com/" },
+            { name: "PimEyes", description: "Face Search Engine, Reverse Image Search", category: "Images", url: "https://pimeyes.com/" },
+            { name: "Facecheck.id", description: "Search for people by photo and verify identity", category: "Images", url: "https://facecheck.id/" },
+            { name: "Bing Visual Search", description: "See it, search it", category: "Images", url: "https://www.bing.com/visualsearch" },
+            { name: "FotoForensics", description: "Tools for digital picture analysis", category: "Images", url: "https://fotoforensics.com/" },
+
+            // Threat Intelligence
+            { name: "MITRE ATT&CK", description: "Knowledge base of adversary tactics and techniques", category: "Threat Intelligence", url: "https://attack.mitre.org/" },
+            { name: "VirusTotal", description: "Analyze suspicious files, domains, IPs and URLs", category: "Threat Intelligence", url: "https://www.virustotal.com/" },
+            { name: "AlienVault OTX", description: "Open Threat Intelligence Community", category: "Threat Intelligence", url: "https://otx.alienvault.com/" },
+            { name: "AbuseIPDB", description: "Check the report history of any IP address", category: "Threat Intelligence", url: "https://www.abuseipdb.com/" },
+            { name: "ThreatMiner", description: "Data Mining for Threat Intelligence", category: "Threat Intelligence", url: "https://www.threatminer.org/" },
+            { name: "PulseDive", description: "Threat intelligence made easy", category: "Threat Intelligence", url: "https://pulsedive.com/" },
+            { name: "PhishTank", description: "Collaborative clearing house for phishing data", category: "Threat Intelligence", url: "https://phishtank.org/" },
+            { name: "Spamhaus", description: "IP and domain reputation data", category: "Threat Intelligence", url: "https://www.spamhaus.org/" },
+            { name: "IBM X-Force Exchange", description: "Threat intelligence sharing platform", category: "Threat Intelligence", url: "https://exchange.xforce.ibmcloud.com/" },
+
+            // Web History
+            { name: "Web Archive", description: "Explore billions of web pages saved over time", category: "Web History", url: "https://archive.org/web/" },
+            { name: "Archive.ph", description: "Create a copy of a webpage that will always be up", category: "Web History", url: "https://archive.ph/" },
+            { name: "CommonCrawl", description: "Open repository of web crawl data", category: "Web History", url: "https://commoncrawl.org/" },
+
+            // Surveillance Cameras
+            { name: "Insecam.org", description: "Directory of online surveillance security cameras", category: "Surveillance Cameras", url: "https://www.insecam.org/" },
+            { name: "Earth Cam", description: "Leading network of live streaming webcams", category: "Surveillance Cameras", url: "https://www.earthcam.com/" },
+            { name: "Webcam Taxi", description: "Live Virtual Travel", category: "Surveillance Cameras", url: "https://www.webcamtaxi.com/" },
+
+            // Crypto
+            { name: "BlockChair", description: "Blockchain explorer, analytics and web services", category: "Crypto", url: "https://blockchair.com/" },
+            { name: "BlockCypher", description: "Search the block chain", category: "Crypto", url: "https://www.blockcypher.com/" },
+            { name: "ChainAbuse", description: "Report malicious crypto activity", category: "Crypto", url: "https://chainabuse.com/" },
+
+            // People
+            { name: "TruePeopleSearch", description: "Free people search tool", category: "People", url: "https://www.truepeoplesearch.com/" },
+            { name: "BeenVerified", description: "Access to public record information", category: "People", url: "https://www.beenverified.com/" },
+            { name: "Spokeo", description: "Search by name, phone, address, or email", category: "People", url: "https://www.spokeo.com/" },
+            { name: "FastPeopleSearch", description: "Find a person by name, phone, or address", category: "People", url: "https://www.fastpeoplesearch.com/" },
+            { name: "Ancestry", description: "Largest for-profit genealogy company", category: "People", url: "https://www.ancestry.com/" },
+            { name: "FamilySearch", description: "Search for your ancestors in historical records", category: "People", url: "https://www.familysearch.org/" },
+
+            // Unclassified
+            { name: "DorkSearch", description: "Speed up your Dorking", category: "Unclassified", url: "https://dorksearch.com/" },
+            { name: "UserSearch", description: "Find someone by username or email on Social Networks", category: "Unclassified", url: "https://usersearch.org/" },
+            { name: "Pastebin", description: "Store text online for a set period of time", category: "Unclassified", url: "https://pastebin.com/" },
+            { name: "Wappalyzer", description: "Instant access to website technology stacks", category: "Unclassified", url: "https://www.wappalyzer.com/" },
+            { name: "Awakari", description: "Real-Time Search from unlimited sources", category: "Unclassified", url: "https://awakari.com/" }
+        ];
+
+        const categoryMap = {};
+        tools.forEach(tool => {
+            if (!categoryMap[tool.category]) {
+                categoryMap[tool.category] = [];
+            }
+            categoryMap[tool.category].push(tool);
+        });
+
+        let currentCategory = "All";
+        let currentTheme = "light";
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function setCookie(name, value, days = 365) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+        }
+
+        function initTheme() {
+            const savedTheme = getCookie('theme') || 'light';
+            currentTheme = savedTheme;
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeToggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            setCookie('theme', currentTheme);
+        }
+
+        function renderCategories(filter = '') {
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = '';
+
+            const allItem = document.createElement('li');
+            allItem.className = `category-item ${currentCategory === 'All' ? 'active' : ''}`;
+            allItem.innerHTML = `
+                <span>All Tools</span>
+                <span class="category-count">${tools.length}</span>
+            `;
+            allItem.onclick = () => selectCategory('All');
+            categoryList.appendChild(allItem);
+
+            const categories = Object.keys(categoryMap).filter(cat => 
+                cat.toLowerCase().includes(filter.toLowerCase())
+            ).sort();
+
+            categories.forEach(category => {
+                const item = document.createElement('li');
+                item.className = `category-item ${currentCategory === category ? 'active' : ''}`;
+                item.innerHTML = `
+                    <span>${category}</span>
+                    <span class="category-count">${categoryMap[category].length}</span>
+                `;
+                item.onclick = () => selectCategory(category);
+                categoryList.appendChild(item);
+            });
+        }
+
+        function selectCategory(category) {
+            currentCategory = category;
+            renderCategories();
+            renderTools();
+            closeSidebar();
+        }
+
+        function renderTools(searchQuery = '') {
+            const toolsGrid = document.getElementById('toolsGrid');
+            toolsGrid.innerHTML = '';
+
+            let filteredTools = currentCategory === 'All' ? tools : categoryMap[currentCategory];
+
+            if (searchQuery) {
+                filteredTools = filteredTools.filter(tool => 
+                    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    tool.category.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+
+            if (filteredTools.length === 0) {
+                toolsGrid.innerHTML = `
+                    <div class="no-results" style="grid-column: 1/-1;">
+                        <div class="no-results-icon">🔍</div>
+                        <h3>No tools found</h3>
+                        <p>Try adjusting your search or category filter</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredTools.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-name">
+                        🔗 ${tool.name}
+                    </div>
+                    <div class="tool-description">${tool.description}</div>
+                    <span class="category-badge">${tool.category}</span>
+                `;
+                card.onclick = () => window.open(tool.url, '_blank');
+                toolsGrid.appendChild(card);
+            });
+        }
+
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        document.getElementById('menuBtn').onclick = openSidebar;
+        document.getElementById('closeBtn').onclick = closeSidebar;
+        document.getElementById('overlay').onclick = closeSidebar;
+        document.getElementById('themeToggle').onclick = toggleTheme;
+
+        document.getElementById('categorySearch').oninput = (e) => {
+            renderCategories(e.target.value);
+        };
+
+        document.getElementById('toolSearch').oninput = (e) => {
+            renderTools(e.target.value);
+        };
+
+        initTheme();
+        renderCategories();
+        renderTools();
+    </script>
+</body>
+</html>
